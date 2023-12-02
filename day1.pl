@@ -1,6 +1,5 @@
 #!/usr/bin/env perl
 ## no critic
-use DDP;
 my $sum1;
 my $sum2;
 my %lookup = (
@@ -14,6 +13,7 @@ my %lookup = (
     eight => 8,
     nine  => 9
 );
+
 while (<STDIN>) {
     @_ = /[0-9]/gmx;
     my $t = shift @_;
