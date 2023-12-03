@@ -28,8 +28,6 @@ for ( my $i = 0; $i <= $#lines; ++$i ) {
             }
 
             push @values, $right_num if looks_like_number($right_num);
-
-            say "RIGHT: $right_num, ($i, $j)";
         }
 
         if ( $j > 0 && looks_like_number( $arr[ $j - 1 ] ) ) {
@@ -40,8 +38,6 @@ for ( my $i = 0; $i <= $#lines; ++$i ) {
             }
 
             push @values, $left_num if looks_like_number($left_num);
-
-            say "LEFT: $left_num, ($i, $j)";
         }
 
         my $handle = sub {
@@ -82,14 +78,12 @@ for ( my $i = 0; $i <= $#lines; ++$i ) {
             my @bottom = @{ $lines[ $i + 1 ] };
             my @v      = $handle->( \@bottom );
             push @values, @v;
-            say 'BOTTOM: ' . @v . ", ($i,$j)";
         }
 
         if ( $i <= $#lines && $i != 0 ) {
             my @top = @{ $lines[ $i - 1 ] };
             my @v   = $handle->( \@top );
             push @values, @v;
-            say "TOP: " . @v . "($i,$j)";
         }
 
         if ($is_gear && $#values == 1) {
