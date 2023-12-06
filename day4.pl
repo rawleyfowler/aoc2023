@@ -6,7 +6,7 @@ use List::Util qw(sum);
 use DDP;
 
 my $i = 0;
-my %a;
+my @p;
 my @k;
 my $K;
 while (<STDIN>) {
@@ -21,9 +21,9 @@ while (<STDIN>) {
     }
 
     if ($j < 1) {
-    	$a{$i} = 0;
+    	$p[$i] = 0;
     } else {
-    	$a{$i} = $j;
+    	$p[$i] = $j;
     	my $l = 2**( $j - 1 );
     	$K += $l;
     }
@@ -39,7 +39,7 @@ my %h;
 my $t;
 while (defined(my $j = shift @k)) {
 	next if $j > $i;
-	if (my $l = $a{$j}) {
+	if (my $l = $p[$j]) {
 		for (1 .. $l) {
 			my $o = $j + $_;
 			push @k, $o;
