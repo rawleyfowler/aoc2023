@@ -70,6 +70,7 @@ for (@maps) {
     my @split = ( split /\n/, $_ );
     my @nums  = map { [/(\d+)/gx] } @split[ 1 .. $#split ];
     my @ret;
+    my @next;
     for (@nums) {
         my ( $d, $s, $k ) = @$_;
 
@@ -77,15 +78,12 @@ for (@maps) {
             return shift() + ( $d - $s );
         };
 
-        say "$d $s $k";
-
         my $start = $s;
         my $end   = $s + $k - 1;
-        my @next;
-        while ( my $o = pop @highlows ) {
+        for (@highlows) {
 
-            my $high = $o->{hi};
-            my $low  = $o->{lo};
+            my $high = $_->{hi};
+            my $low  = $_->{lo};
 
             # No overlap
             #
@@ -116,7 +114,7 @@ for (@maps) {
             elsif ( $low < $start && $high > $end ) {
                 print "DOUBLE SIDED OVERLAP: $low, $high, $start, $end\n";
                 push @ret,  range( $delta->($start), $delta->($end) );
-                push @next, range( $start - 1,       $low );
+                push @next, range( $low, $start - 1 );
                 push @next, range( $end + 1,         $high );
             }
 
@@ -124,7 +122,7 @@ for (@maps) {
             #
             #  XXXXXX
             #    YYYYYYY
-            elsif ( $low < $start && $high <= $end && $high > $start ) {
+            elsif ( $low < $start && $high <= $end && $high >= $start ) {
                 print "LEFT OVERLAP: $low, $high, $start, $end\n";
                 push @ret,  range( $delta->($start), $delta->($high) );
                 push @next, range( $low,             $start - 1 );
@@ -134,20 +132,21 @@ for (@maps) {
             #
             #      XXXXXXX
             #    YYYYYYY
-            elsif ( $low >= $start && $high > $end && $low < $end ) {
+            elsif ( $low >= $start && $high >= $end && $low < $end ) {
                 print "RIGHT OVERLAP: $low, $high, $start, $end\n";
                 push @ret,  range( $delta->($low), $delta->($end) );
                 push @next, range( $end + 1,       $high );
             }
-            else {
-                say "WTF: $low, $high | $start, $end";
-            }
         }
 
-        @highlows = ( @next, @ret );
-        p @highlows;
-        @ret = ();
+        @highlows = @next;
+        @next = ();
     }
+
+    push @highlows, @ret;
+    p @highlows;
+    @next = ();
+    @ret = ();
 }
 
 print "PART 2: ", min( map { $_->{lo}, $_->{hi} } @highlows ), "\n";
