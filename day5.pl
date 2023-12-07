@@ -90,7 +90,6 @@ for (@maps) {
             # XXX
             #     YYYYYYY
             if ( ( max( $low, $start ) - min( $high, $end ) ) > 0 ) {
-                print "NO OVERLAP: $low, $high, $start, $end\n";
                 push @next, range( $low, $high );
             }
 
@@ -103,7 +102,6 @@ for (@maps) {
                 && $high <= $end
                 && $high > $start )
             {
-                print "INCLUSIVE OVERLAP: $low, $high, $start, $end\n";
                 push @ret, range( $delta->($low), $delta->($high) );
             }
 
@@ -112,9 +110,8 @@ for (@maps) {
             #  XXXXXXXXXXX
             #    YYYYYYY
             elsif ( $low < $start && $high > $end ) {
-                print "DOUBLE SIDED OVERLAP: $low, $high, $start, $end\n";
                 push @ret,  range( $delta->($start), $delta->($end) );
-                push @next, range( $low, $start - 1 );
+                push @next, range( $low,             $start - 1 );
                 push @next, range( $end + 1,         $high );
             }
 
@@ -123,7 +120,6 @@ for (@maps) {
             #  XXXXXX
             #    YYYYYYY
             elsif ( $low < $start && $high <= $end && $high >= $start ) {
-                print "LEFT OVERLAP: $low, $high, $start, $end\n";
                 push @ret,  range( $delta->($start), $delta->($high) );
                 push @next, range( $low,             $start - 1 );
             }
@@ -133,20 +129,18 @@ for (@maps) {
             #      XXXXXXX
             #    YYYYYYY
             elsif ( $low >= $start && $high >= $end && $low < $end ) {
-                print "RIGHT OVERLAP: $low, $high, $start, $end\n";
                 push @ret,  range( $delta->($low), $delta->($end) );
                 push @next, range( $end + 1,       $high );
             }
         }
 
         @highlows = @next;
-        @next = ();
+        @next     = ();
     }
 
     push @highlows, @ret;
-    p @highlows;
     @next = ();
-    @ret = ();
+    @ret  = ();
 }
 
 print "PART 2: ", min( map { $_->{lo}, $_->{hi} } @highlows ), "\n";
