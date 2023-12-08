@@ -95,10 +95,8 @@ __CPP__
     array = (AV *)SvRV(array_ref);
 
     int n = av_top_index(array);
-    SV **value;
-
     for (; n >= 0; n--) {
-      size_t t = SvIV(*av_fetch(array, n, 0));
+      std::size_t t = SvIV(*av_fetch(array, n, 0));
       vec.push_back(t);
     }
 
